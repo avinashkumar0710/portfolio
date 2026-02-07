@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Messages API Test</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .section { background: white; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1, h2 { color: #333; }
+        button { background: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        button:hover { background: #0056b3; }
+        .success { background: #d4edda; color: #155724; padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .error { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .info { background: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 4px; margin: 10px 0; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        textarea { width: 100%; min-height: 100px; padding: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Contact Messages API Test Tool</h1>
+        
+        <div class="section" style="background: #d1ecf1; border-left: 4px solid #17a2b8;">
+            <h2>✅ Session Authentication - Fixed!</h2>
+            <p><strong>🐛 The Bug:</strong> Session variable mismatch prevented GET requests from working</p>
+            <p><strong>✅ The Fix:</strong> Updated api/contact.php to properly recognize session variables</p>
+            <p><strong style="color: #0c5460;">📌 To Test (View Messages):</strong></p>
+            <ol>
+                <li><a href="admin-login.html" target="_blank"><strong>1. Open Admin Login</strong></a></li>
+                <li><strong>2. Login with credentials:</strong>
+                    <ul>
+                        <li>Email: <code>admin@portfolio.com</code></li>
+                        <li>Password: <code>admin123</code></li>
+                    </ul>
+                </li>
+                <li><strong>3. Return here and click "Test GET Request"</strong></li>
+                <li>✅ Should see all contact messages in JSON format</li>
+            </ol>
+            <p>💡 <strong>Quick Alternative:</strong> <a href="test-contacts.php" target="_blank">View messages without login (test-contacts.php)</a></p>
+            <p>📚 <strong>Learn More:</strong> <a href="SESSION_BUG_FIX.md" target="_blank">Read the detailed bug fix explanation</a></p>
+        </div>
+        
+        <div class="section">
+            <h2>1️⃣ Test GET (Retrieve Messages)</h2>
+            <p>Fetch all contact messages from database (requires admin login)</p>
+            <button onclick="testGET()">Test GET Request</button>
+            <div id="getResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>2️⃣ Test POST (Submit Form)</h2>
+            <p>Submit a test contact form</p>
+            <form id="testForm">
+                <div>
+                    <label>First Name:</label>
+                    <input type="text" name="firstName" value="Test" required>
+                </div>
+                <div>
+                    <label>Last Name:</label>
+                    <input type="text" name="lastName" value="User" required>
+                </div>
+                <div>
+                    <label>Email:</label>
+                    <input type="email" name="email" value="test@example.com" required>
+                </div>
+                <div>
+                    <label>Subject:</label>
+                    <select name="subject" required>
+                        <option value="Project Inquiry">Project Inquiry</option>
+                        <option value="Freelance Opportunity">Freelance Opportunity</option>
+                        <option value="Test">Test</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Message:</label>
+                    <textarea name="message" required>This is a test message from the API test tool.</textarea>
+                </div>
+                <button type="button" onclick="testPOST()">Test POST Request</button>
+            </form>
+            <div id="postResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>3️⃣ Database Status</h2>
+            <p>Check current database state</p>
+            <button onclick="checkStatus()">Check Status</button>
+            <div id="statusResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Debug Information</h2>
+            <button onclick="showDebugInfo()">Show Debug Info</button>
+            <div id="debugInfo"></div>
+        </div>
+
+        <div class="section">
+            <h2>🔗 Quick Links</h2>
+            <ul>
+                <li><a href="test-contacts.php" target="_blank">View Messages (test-contacts.php)</a></li>
+                <li><a href="admin.html" target="_blank">Go to Admin Dashboard</a></li>
+                <li><a href="index.html" target="_blank">Go to Portfolio</a></li>
+                <li><a href="api/contact.php?debug=1" target="_blank">API Debug Info (debug=1)</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = '/portfolio/api/contact.php';
+
+        async function testGET() {
+            const resultDiv = document.getElementById('getResult');
+            resultDiv.innerHTML = '<p class="info">Loading...</p>';
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const count = data.data ? data.data.length : 0;
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            ✓ GET Request Successful!
+                            <p>Found ${count} message(s)</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            ✗ GET Request Failed
+                            <p>${data.message}</p>
+                            <p><strong>Note:</strong> You must be logged into admin panel to retrieve messages</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testPOST() {
+            const form = document.getElementById('testForm');
+            const resultDiv = document.getElementById('postResult');
+            resultDiv.innerHTML = '<p class="info">Sending...</p>';
+            
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            ✓ POST Request Successful!
+                            <p>Message saved with ID: ${data.contactId}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                            <p>Check admin panel "Contact Messages" to see it!</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            ✗ POST Request Failed
+                            <p>${data.message}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function checkStatus() {
+            const resultDiv = document.getElementById('statusResult');
+            resultDiv.innerHTML = '<p class="info">Checking...</p>';
+            
+            try {
+                const response = await fetch('/portfolio/api/debug-status.php');
+                const text = await response.text();
+                
+                // Try to parse as JSON
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            ✗ API returned invalid JSON
+                            <p>Response: ${text.substring(0, 200)}</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '<div class="info"><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                if (data.contacts_table_exists) {
+                    html += `<p style="color: green;">✓ Table exists with ${data.contact_messages_count} message(s)</p>`;
+                } else {
+                    html += '<p style="color: orange;">⚠ Table will be created on first submission</p>';
+                }
+                html += '</div>';
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ✗ Error checking status
+                        <p>${error.message}</p>
+                        <p>Make sure the API endpoint is accessible</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showDebugInfo() {
+            const debugDiv = document.getElementById('debugInfo');
+            debugDiv.innerHTML = `
+                <div class="info">
+                    <p><strong>Current URL:</strong> ${window.location.href}</p>
+                    <p><strong>API Endpoint:</strong> ${apiUrl}</p>
+                    <p><strong>Browser:</strong> ${navigator.userAgent}</p>
+                    <p><strong>Cookies Enabled:</strong> ${navigator.cookieEnabled}</p>
+                    <p><strong>LocalStorage Available:</strong> ${typeof localStorage !== 'undefined'}</p>
+                </div>
+            `;
+        }
+
+        // Auto-check status on load
+        window.addEventListener('load', checkStatus);
+    </script>
+</body>
+</html>

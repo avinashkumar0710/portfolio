@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-md">
+        <!-- Animated Background Elements -->
+        <div class="absolute top-20 left-10 w-72 h-72 bg-cyan-500/20 rounded-full blur-3xl opacity-50"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl opacity-50"></div>
+
+        <!-- Login Card -->
+        <div class="glass rounded-2xl p-8 border border-slate-700 relative z-10">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-block p-4 bg-cyan-500/20 rounded-full border border-cyan-500/30 mb-4">
+                    <i class="fas fa-lock text-cyan-400 text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-white">Admin Login</h1>
+                <p class="text-gray-400 mt-2">Portfolio Management System</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6">
+                <!-- Email Input -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300 mb-2">
+                        <i class="fas fa-envelope mr-2 text-cyan-400"></i>Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="admin@portfolio.com" 
+                        required
+                        class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition"
+                    >
+                </div>
+
+                <!-- Password Input -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300 mb-2">
+                        <i class="fas fa-lock mr-2 text-cyan-400"></i>Password
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            placeholder="••••••••" 
+                            required
+                            class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition"
+                        >
+                        <button 
+                            type="button" 
+                            onclick="togglePassword()" 
+                            class="absolute right-3 top-3 text-gray-400 hover:text-white"
+                        >
+                            <i class="fas fa-eye" id="eye-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="flex items-center">
+                    <input 
+                        type="checkbox" 
+                        id="remember" 
+                        class="w-4 h-4 rounded border-gray-700 text-cyan-500 focus:ring-cyan-400 bg-slate-800"
+                    >
+                    <label for="remember" class="ml-2 text-sm text-gray-400">
+                        Remember me on this device
+                    </label>
+                </div>
+
+                <!-- Login Button -->
+                <button 
+                    type="submit" 
+                    id="submitBtn"
+                    class="w-full py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-semibold transition transform hover:scale-[1.02] shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2"
+                >
+                    <i class="fas fa-sign-in-alt"></i> <span id="btnText">Sign In</span>
+                </button>
+            </form>
+
+            <!-- Demo Credentials -->
+            <div class="mt-8 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                <p class="text-gray-400 text-xs mb-3"><i class="fas fa-info-circle mr-2 text-cyan-400"></i>Demo Credentials:</p>
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Email:</span>
+                        <code class="text-cyan-400 font-mono">admin@portfolio.com</code>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Password:</span>
+                        <code class="text-cyan-400 font-mono">admin123</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-8 text-center">
+                <p class="text-gray-500 text-sm">
+                    Back to <a href="portfolio.html" class="text-cyan-400 hover:text-cyan-300 transition">Portfolio</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Feature Highlights -->
+        <div class="mt-8 grid grid-cols-3 gap-4">
+            <div class="glass rounded-lg p-4 border border-slate-700 text-center">
+                <i class="fas fa-edit text-cyan-400 text-2xl mb-2 block"></i>
+                <p class="text-xs text-gray-400">Edit Content</p>
+            </div>
+            <div class="glass rounded-lg p-4 border border-slate-700 text-center">
+                <i class="fas fa-plus text-green-400 text-2xl mb-2 block"></i>
+                <p class="text-xs text-gray-400">Add Items</p>
+            </div>
+            <div class="glass rounded-lg p-4 border border-slate-700 text-center">
+                <i class="fas fa-cogs text-purple-400 text-2xl mb-2 block"></i>
+                <p class="text-xs text-gray-400">Manage All</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eye-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Handle login with backend API
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+
+            // Disable button during request
+            submitBtn.disabled = true;
+            const originalText = btnText.textContent;
+            btnText.textContent = 'Signing in...';
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'login');
+                formData.append('email', email);
+                formData.append('password', password);
+
+                const response = await fetch('api/auth.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store session info locally for UI reference
+                    if (remember) {
+                        localStorage.setItem('adminEmail', email);
+                    }
+                    
+                    // Redirect to admin dashboard
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 500);
+                } else {
+                    showError(data.message || 'Login failed. Please try again.');
+                    submitBtn.disabled = false;
+                    btnText.textContent = originalText;
+                    document.getElementById('password').value = '';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('Connection error. Please check your server configuration.');
+                submitBtn.disabled = false;
+                btnText.textContent = originalText;
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const form = document.getElementById('loginForm');
+            
+            // Remove existing errors
+            const existingError = form.querySelector('.bg-red-500');
+            if (existingError) existingError.remove();
+            
+            const error = document.createElement('div');
+            error.className = 'bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-4 flex items-center gap-2';
+            error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            form.prepend(error);
+            
+            setTimeout(() => error.remove(), 5000);
+        }
+
+        // Check if already logged in on page load
+        window.addEventListener('load', async function() {
+            try {
+                const response = await fetch('api/auth.php?action=check_auth');
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    // Already logged in, redirect to admin panel
+                    window.location.href = 'admin.html';
+                }
+            } catch (error) {
+                console.log('Server check failed, allowing login form');
+            }
+            
+            // Pre-fill email if remembered
+            const savedEmail = localStorage.getItem('adminEmail');
+            if (savedEmail) {
+                document.getElementById('email').value = savedEmail;
+                document.getElementById('remember').checked = true;
+            }
+        });
+    </script>
+</body>
+</html>

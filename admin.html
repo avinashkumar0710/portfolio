@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar-active {
+            background-color: #06b6d4;
+            color: white;
+        }
+        .tab-active {
+            border-bottom: 3px solid #06b6d4;
+            color: #06b6d4;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-300">
+    <!-- Admin Dashboard Container -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <div class="w-64 bg-slate-800 border-r border-slate-700 flex flex-col">
+            <div class="p-6 border-b border-slate-700">
+                <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-cog text-cyan-400"></i> Admin Panel
+                </h1>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-2">
+                    <button onclick="switchSection('dashboard')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3 sidebar-active">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </button>
+                    <button onclick="switchSection('about')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3">
+                        <i class="fas fa-user"></i> About
+                    </button>
+                    <button onclick="switchSection('experience')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3">
+                        <i class="fas fa-briefcase"></i> Experience
+                    </button>
+                    <button onclick="switchSection('projects')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3">
+                        <i class="fas fa-folder"></i> Projects
+                    </button>
+                    <button onclick="switchSection('skills')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3">
+                        <i class="fas fa-code"></i> Skills
+                    </button>
+                    <button onclick="switchSection('testimonials')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3">
+                        <i class="fas fa-quote-left"></i> Testimonials
+                    </button>
+                    <button onclick="switchSection('certificates')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3">
+                        <i class="fas fa-certificate"></i> Certificates
+                    </button>
+                    <button onclick="switchSection('contact')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3">
+                        <i class="fas fa-envelope"></i> Contact Info
+                    </button>
+                    <button onclick="switchSection('sections')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3">
+                        <i class="fas fa-plus-circle"></i> Add Sections
+                    </button>
+                    <button onclick="switchSection('messages')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition flex items-center gap-3">
+                        <i class="fas fa-inbox"></i> Contact Messages
+                    </button>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700">
+                <button onclick="logout()" class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar -->
+            <div class="bg-slate-800 border-b border-slate-700 px-8 py-4 flex justify-between items-center">
+                <h2 id="page-title" class="text-2xl font-bold text-white">Dashboard</h2>
+                <div class="flex items-center gap-4">
+                    <button onclick="saveAllChanges()" class="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition flex items-center gap-2 font-semibold">
+                        <i class="fas fa-save"></i> Save All
+                    </button>
+                    <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center cursor-pointer" title="Admin User">
+                        <i class="fas fa-user-circle text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto p-8">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="section-content">
+                    <div class="grid grid-cols-4 gap-6 mb-8">
+                        <div class="glass rounded-lg p-6 border border-slate-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Total Projects</p>
+                                    <p class="text-3xl font-bold text-white mt-2" id="total-projects">4</p>
+                                </div>
+                                <i class="fas fa-folder text-cyan-400 text-3xl opacity-50"></i>
+                            </div>
+                        </div>
+                        <div class="glass rounded-lg p-6 border border-slate-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Total Skills</p>
+                                    <p class="text-3xl font-bold text-white mt-2" id="total-skills">20</p>
+                                </div>
+                                <i class="fas fa-code text-green-400 text-3xl opacity-50"></i>
+                            </div>
+                        </div>
+                        <div class="glass rounded-lg p-6 border border-slate-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Experience Years</p>
+                                    <p class="text-3xl font-bold text-white mt-2" id="experience-years">3</p>
+                                </div>
+                                <i class="fas fa-briefcase text-purple-400 text-3xl opacity-50"></i>
+                            </div>
+                        </div>
+                        <div class="glass rounded-lg p-6 border border-slate-700">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Last Updated</p>
+                                    <p class="text-sm font-bold text-white mt-2" id="last-updated">Today</p>
+                                </div>
+                                <i class="fas fa-history text-blue-400 text-3xl opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-lg p-6 border border-slate-700">
+                        <h3 class="text-xl font-bold text-white mb-4">Quick Actions</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button onclick="switchSection('projects')" class="p-4 bg-slate-700 hover:bg-slate-600 rounded-lg text-center transition">
+                                <i class="fas fa-plus text-cyan-400 text-2xl mb-2 block"></i>
+                                <span class="text-sm">Add Project</span>
+                            </button>
+                            <button onclick="switchSection('skills')" class="p-4 bg-slate-700 hover:bg-slate-600 rounded-lg text-center transition">
+                                <i class="fas fa-plus text-green-400 text-2xl mb-2 block"></i>
+                                <span class="text-sm">Add Skill</span>
+                            </button>
+                            <button onclick="switchSection('experience')" class="p-4 bg-slate-700 hover:bg-slate-600 rounded-lg text-center transition">
+                                <i class="fas fa-plus text-purple-400 text-2xl mb-2 block"></i>
+                                <span class="text-sm">Add Experience</span>
+                            </button>
+                            <button onclick="switchSection('sections')" class="p-4 bg-slate-700 hover:bg-slate-600 rounded-lg text-center transition">
+                                <i class="fas fa-plus text-blue-400 text-2xl mb-2 block"></i>
+                                <span class="text-sm">New Section</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Section -->
+                <div id="about-section" class="section-content hidden">
+                    <div class="glass rounded-lg p-8 border border-slate-700 max-w-4xl">
+                        <h3 class="text-2xl font-bold text-white mb-6">Edit About Section</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Full Name</label>
+                                <input type="text" value="Avinash" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="about-name">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Title/Role</label>
+                                <input type="text" value="Full Stack Developer & Data Analyst" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="about-role">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Location</label>
+                                <input type="text" value="Ahiwara, Durg" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="about-location">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Bio/Description</label>
+                                <textarea rows="4" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="about-bio">Based in Ahiwara, Durg, I specialize in building custom digital solutions that drive business efficiency. Currently working at NSPCL - NTPC Ltd.</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Profile Picture URL</label>
+                                <input type="text" placeholder="https://..." class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="about-image">
+                            </div>
+                            <button onclick="saveSection('about')" class="w-full px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition font-semibold">
+                                <i class="fas fa-save mr-2"></i> Save About Section
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience Section -->
+                <div id="experience-section" class="section-content hidden">
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-white">Manage Experience</h3>
+                            <button onclick="openModal('experience')" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center gap-2">
+                                <i class="fas fa-plus"></i> Add Experience
+                            </button>
+                        </div>
+                        <div id="experience-list" class="space-y-4">
+                            <!-- Experience items will be added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Section -->
+                <div id="projects-section" class="section-content hidden">
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-white">Manage Projects</h3>
+                            <button onclick="openModal('project')" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center gap-2">
+                                <i class="fas fa-plus"></i> Add Project
+                            </button>
+                        </div>
+                        <div id="projects-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Projects will be added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Section -->
+                <div id="skills-section" class="section-content hidden">
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-white">Manage Skills</h3>
+                            <button onclick="openModal('skill')" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center gap-2">
+                                <i class="fas fa-plus"></i> Add Skill
+                            </button>
+                        </div>
+                        <div id="skills-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Skills will be added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonials Section -->
+                <div id="testimonials-section" class="section-content hidden">
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-white">Manage Testimonials</h3>
+                            <button onclick="openModal('testimonial')" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center gap-2">
+                                <i class="fas fa-plus"></i> Add Testimonial
+                            </button>
+                        </div>
+                        <div id="testimonials-list" class="space-y-4">
+                            <!-- Testimonials will be added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificates Section -->
+                <div id="certificates-section" class="section-content hidden">
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-white">Manage Certificates</h3>
+                            <button onclick="openModal('certificate')" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center gap-2">
+                                <i class="fas fa-plus"></i> Add Certificate
+                            </button>
+                        </div>
+                        <div id="certificates-list" class="space-y-4">
+                            <!-- Certificates will be added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Section -->
+                <div id="contact-section" class="section-content hidden">
+                    <div class="glass rounded-lg p-8 border border-slate-700 max-w-4xl">
+                        <h3 class="text-2xl font-bold text-white mb-6">Edit Contact Information</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Email Address</label>
+                                <input type="email" value="contact@avinash.dev" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="contact-email">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Phone Number</label>
+                                <input type="tel" placeholder="+91 XXXXXXXXXX" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="contact-phone">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">LinkedIn URL</label>
+                                <input type="url" placeholder="https://linkedin.com/in/..." class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="contact-linkedin">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">GitHub URL</label>
+                                <input type="url" placeholder="https://github.com/..." class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="contact-github">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Twitter URL</label>
+                                <input type="url" placeholder="https://twitter.com/..." class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="contact-twitter">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Location</label>
+                                <input type="text" value="Ahiwara, Durg, Chhattisgarh, India" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="contact-location">
+                            </div>
+                            <button onclick="saveSection('contact')" class="w-full px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition font-semibold">
+                                <i class="fas fa-save mr-2"></i> Save Contact Information
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Custom Sections -->
+                <div id="sections-section" class="section-content hidden">
+                    <div class="space-y-6">
+                        <div class="glass rounded-lg p-8 border border-slate-700">
+                            <h3 class="text-2xl font-bold text-white mb-6">Create New Section</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-300 mb-2">Section Title</label>
+                                    <input type="text" placeholder="e.g., Blog, Awards, Publications" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="new-section-title">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-300 mb-2">Section Icon (Font Awesome)</label>
+                                    <input type="text" placeholder="e.g., fa-blog, fa-trophy" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="new-section-icon">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-300 mb-2">Section Description</label>
+                                    <textarea rows="3" placeholder="Brief description of this section" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none" id="new-section-desc"></textarea>
+                                </div>
+                                <button onclick="createNewSection()" class="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition font-semibold">
+                                    <i class="fas fa-plus mr-2"></i> Create Section
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-4">Custom Sections</h3>
+                            <div id="custom-sections-list" class="space-y-4">
+                                <!-- Custom sections will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Section -->
+                <div id="messages-section" class="section-content hidden">
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-white">Contact Messages</h3>
+                            <div class="flex items-center gap-2">
+                                <span class="px-3 py-1 bg-blue-600 text-white text-sm rounded-full" id="message-count">0 messages</span>
+                                <button onclick="loadContactMessages()" class="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition flex items-center gap-2">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div id="messages-list" class="space-y-4">
+                            <p class="text-gray-400 text-center py-8">Loading messages...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding/Editing Items -->
+    <div id="modal" class="modal-overlay">
+        <div class="bg-slate-800 rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-700">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="modal-title" class="text-2xl font-bold text-white">Add Item</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div id="modal-content" class="space-y-4">
+                <!-- Modal content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize data from API
+        let portfolioData = {
+            about: {
+                name: 'Avinash',
+                role: 'Full Stack Developer & Data Analyst',
+                location: 'Ahiwara, Durg',
+                bio: 'Based in Ahiwara, Durg, I specialize in building custom digital solutions that drive business efficiency. Currently working at NSPCL - NTPC Ltd.',
+                image: ''
+            },
+            projects: [
+                { id: 1, title: 'Online Training Management System', category: 'web', description: 'Enterprise training platform', tech: ['PHP', 'SQL Server'] },
+                { id: 2, title: 'Online Complaint Management System', category: 'web', description: 'Complaint tracking system', tech: ['PHP', 'SQL Server'] },
+                { id: 3, title: 'NSPCL Mobile Application', category: 'mobile', description: 'Mobile app for internal use', tech: ['Ionic', 'Angular'] },
+                { id: 4, title: 'Pizza Sales Power BI Report', category: 'data', description: 'Data visualization project', tech: ['Power BI', 'DAX'] }
+            ],
+            skills: [
+                { id: 1, name: 'PHP', category: 'Languages', level: 95 },
+                { id: 2, name: 'JavaScript', category: 'Languages', level: 85 },
+                { id: 3, name: 'SQL Server', category: 'Databases', level: 90 },
+                { id: 4, name: 'Ionic', category: 'Frameworks', level: 80 }
+            ],
+            experience: [
+                { id: 1, title: 'Web Developer', company: 'NSPCL - NTPC Ltd', duration: 'April 2022 - Present', description: 'Enterprise solutions' }
+            ],
+            testimonials: [
+                { id: 1, text: 'Great developer', author: 'HR Manager', company: 'NSPCL - NTPC Ltd' }
+            ],
+            certificates: [
+                { id: 1, title: 'Data Analytics Consulting', issuer: 'KPMG Australia Virtual Internship', link: '', date: '' },
+                { id: 2, title: 'Sales Forecasting', issuer: 'HP LIFE Certification', link: '', date: '' },
+                { id: 3, title: 'Power BI Data Visualization', issuer: 'Jobaaj.com', link: '', date: '' },
+                { id: 4, title: 'ChatGPT for Beginners V2', issuer: 'Great Learning', link: '', date: '' },
+                { id: 5, title: 'Generative AI Foundations', issuer: 'upGrad Certification', link: '', date: '' }
+            ],
+            contact: {
+                email: 'contact@avinash.dev',
+                phone: '',
+                linkedin: '',
+                github: '',
+                twitter: '',
+                location: 'Ahiwara, Durg, Chhattisgarh, India'
+            },
+            customSections: []
+        };
+
+        let currentModal = null;
+        let editingItem = null;
+
+        // Load data from API
+        async function loadData() {
+            try {
+                const response = await fetch('api/portfolio-data.php');
+                const result = await response.json();
+                if (result.success) {
+                    portfolioData = result.data;
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Use default data if API fails
+            }
+            renderAllItems();
+            loadAboutAndContact();
+        }
+
+        // Save data to API
+        async function saveData() {
+            try {
+                console.log('Saving data to API...', portfolioData);
+                const response = await fetch('api/portfolio-data.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(portfolioData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('API Response:', result);
+                
+                if (result.success) {
+                    console.log('Data successfully saved to: /data/portfolio-data.json');
+                    return true;
+                } else {
+                    console.error('API Error:', result.message);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error saving data:', error);
+                return false;
+            }
+        }
+
+        // Load about and contact fields
+        function loadAboutAndContact() {
+            if (portfolioData.about) {
+                document.getElementById('about-name').value = portfolioData.about.name || 'Avinash';
+                document.getElementById('about-role').value = portfolioData.about.role || 'Full Stack Developer & Data Analyst';
+                document.getElementById('about-location').value = portfolioData.about.location || 'Ahiwara, Durg';
+                document.getElementById('about-bio').value = portfolioData.about.bio || '';
+                document.getElementById('about-image').value = portfolioData.about.image || '';
+            }
+            if (portfolioData.contact) {
+                document.getElementById('contact-email').value = portfolioData.contact.email || '';
+                document.getElementById('contact-phone').value = portfolioData.contact.phone || '';
+                document.getElementById('contact-linkedin').value = portfolioData.contact.linkedin || '';
+                document.getElementById('contact-github').value = portfolioData.contact.github || '';
+                document.getElementById('contact-twitter').value = portfolioData.contact.twitter || '';
+                document.getElementById('contact-location').value = portfolioData.contact.location || '';
+            }
+        }
+
+        // Switch sections
+        function switchSection(section) {
+            document.querySelectorAll('.section-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(section + '-section').classList.remove('hidden');
+            document.getElementById('page-title').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('sidebar-active'));
+            event.target.closest('.nav-item').classList.add('sidebar-active');
+
+            if (section === 'projects') renderProjects();
+            if (section === 'skills') renderSkills();
+            if (section === 'experience') renderExperience();
+            if (section === 'testimonials') renderTestimonials();
+            if (section === 'certificates') renderCertificates();
+            if (section === 'sections') renderCustomSections();
+            if (section === 'messages') loadContactMessages();
+        }
+
+        // Modal functions
+        function openModal(type, item = null) {
+            currentModal = type;
+            editingItem = item;
+            document.getElementById('modal').classList.add('active');
+            
+            let content = '';
+            const modalTitle = document.getElementById('modal-title');
+
+            if (type === 'project') {
+                modalTitle.textContent = 'Add New Project';
+                content = `
+                    <input type="text" id="project-title" placeholder="Project Title" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                    <select id="project-category" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                        <option value="web">Web App</option>
+                        <option value="mobile">Mobile</option>
+                        <option value="data">Data Analytics</option>
+                    </select>
+                    <textarea id="project-desc" placeholder="Project Description" rows="3" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4"></textarea>
+                    <input type="text" id="project-tech" placeholder="Technologies (comma separated)" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                    <button onclick="saveItem('project')" class="w-full px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition">Save Project</button>
+                `;
+            } else if (type === 'skill') {
+                modalTitle.textContent = 'Add New Skill';
+                content = `
+                    <input type="text" id="skill-name" placeholder="Skill Name" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                    <select id="skill-category" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                        <option value="Languages">Languages</option>
+                        <option value="Frameworks">Frameworks</option>
+                        <option value="Databases">Databases</option>
+                        <option value="Tools">Tools</option>
+                    </select>
+                    <div class="flex items-center gap-4">
+                        <input type="range" id="skill-level" min="0" max="100" value="80" class="flex-1">
+                        <span id="level-display" class="text-white font-semibold">80%</span>
+                    </div>
+                    <button onclick="saveItem('skill')" class="w-full px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition mt-4">Save Skill</button>
+                `;
+                document.getElementById('modal-content').innerHTML = content;
+                document.getElementById('skill-level').addEventListener('input', function() {
+                    document.getElementById('level-display').textContent = this.value + '%';
+                });
+            } else if (type === 'experience') {
+                modalTitle.textContent = 'Add New Experience';
+                content = `
+                    <input type="text" id="exp-title" placeholder="Job Title" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                    <input type="text" id="exp-company" placeholder="Company Name" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                    <input type="text" id="exp-duration" placeholder="Duration (e.g., Apr 2022 - Present)" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                    <textarea id="exp-desc" placeholder="Description" rows="3" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4"></textarea>
+                    <button onclick="saveItem('experience')" class="w-full px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition">Save Experience</button>
+                `;
+            } else if (type === 'testimonial') {
+                modalTitle.textContent = 'Add New Testimonial';
+                content = `
+                    <textarea id="testi-text" placeholder="Testimonial Text" rows="3" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4"></textarea>
+                    <input type="text" id="testi-author" placeholder="Author Name" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                    <input type="text" id="testi-company" placeholder="Company/Position" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4">
+                    <button onclick="saveItem('testimonial')" class="w-full px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition">Save Testimonial</button>
+                `;
+            } else if (type === 'certificate') {
+                if (editingItem) {
+                    modalTitle.textContent = 'Edit Certificate';
+                } else {
+                    modalTitle.textContent = 'Add New Certificate';
+                }
+                content = `
+                    <input type="text" id="cert-title" placeholder="Certificate Title" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4" value="${editingItem?.title || ''}">
+                    <input type="text" id="cert-issuer" placeholder="Issuing Organization" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4" value="${editingItem?.issuer || ''}">
+                    <input type="url" id="cert-link" placeholder="Certificate Link (optional)" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4" value="${editingItem?.link || ''}">
+                    <input type="date" id="cert-date" placeholder="Issue Date" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white mb-4" value="${editingItem?.date || ''}">
+                    <button onclick="saveItem('certificate')" class="w-full px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition">${editingItem ? 'Update Certificate' : 'Save Certificate'}</button>
+                `;
+            }
+
+            document.getElementById('modal-content').innerHTML = content;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            currentModal = null;
+            editingItem = null;
+        }
+
+        // Edit item
+        function editItem(type, id) {
+            if (type === 'certificate') {
+                const cert = portfolioData.certificates.find(c => c.id === id);
+                if (cert) {
+                    openModal('certificate', cert);
+                }
+            }
+        }
+
+        // Save item
+        function saveItem(type) {
+            console.log('saveItem called with type:', type);
+            const newId = Math.max(...(portfolioData[type === 'project' ? 'projects' : type === 'skill' ? 'skills' : type === 'experience' ? 'experience' : type === 'testimonial' ? 'testimonials' : 'certificates'].map(i => i.id) || [0])) + 1;
+            console.log('New ID:', newId);
+
+            if (type === 'project') {
+                const item = {
+                    id: newId,
+                    title: document.getElementById('project-title').value,
+                    category: document.getElementById('project-category').value,
+                    description: document.getElementById('project-desc').value,
+                    tech: document.getElementById('project-tech').value.split(',').map(t => t.trim())
+                };
+                portfolioData.projects.push(item);
+            } else if (type === 'skill') {
+                const item = {
+                    id: newId,
+                    name: document.getElementById('skill-name').value,
+                    category: document.getElementById('skill-category').value,
+                    level: parseInt(document.getElementById('skill-level').value)
+                };
+                portfolioData.skills.push(item);
+            } else if (type === 'experience') {
+                const item = {
+                    id: newId,
+                    title: document.getElementById('exp-title').value,
+                    company: document.getElementById('exp-company').value,
+                    duration: document.getElementById('exp-duration').value,
+                    description: document.getElementById('exp-desc').value
+                };
+                portfolioData.experience.push(item);
+            } else if (type === 'testimonial') {
+                const item = {
+                    id: newId,
+                    text: document.getElementById('testi-text').value,
+                    author: document.getElementById('testi-author').value,
+                    company: document.getElementById('testi-company').value
+                };
+                portfolioData.testimonials.push(item);
+            } else if (type === 'certificate') {
+                console.log('Saving certificate...');
+                console.log('cert-title value:', document.getElementById('cert-title')?.value);
+                console.log('cert-issuer value:', document.getElementById('cert-issuer')?.value);
+                console.log('cert-link value:', document.getElementById('cert-link')?.value);
+                console.log('cert-date value:', document.getElementById('cert-date')?.value);
+                
+                const item = {
+                    id: editingItem ? editingItem.id : newId,
+                    title: document.getElementById('cert-title').value,
+                    issuer: document.getElementById('cert-issuer').value,
+                    link: document.getElementById('cert-link').value,
+                    date: document.getElementById('cert-date').value
+                };
+                console.log('Certificate item to add:', item);
+                
+                if (editingItem) {
+                    // Update existing certificate
+                    const index = portfolioData.certificates.findIndex(c => c.id === editingItem.id);
+                    if (index !== -1) {
+                        portfolioData.certificates[index] = item;
+                        console.log('Certificate updated at index:', index);
+                    }
+                } else {
+                    // Add new certificate
+                    portfolioData.certificates.push(item);
+                    console.log('New certificate added');
+                }
+                console.log('Certificates after save:', portfolioData.certificates);
+            }
+
+            saveData().then(success => {
+                if (success) {
+                    closeModal();
+                    const actionMsg = editingItem ? 'updated' : 'added';
+                    showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} ${actionMsg} successfully!`);
+                    
+                    if (type === 'project') renderProjects();
+                    if (type === 'skill') renderSkills();
+                    if (type === 'experience') renderExperience();
+                    if (type === 'testimonial') renderTestimonials();
+                    if (type === 'certificate') renderCertificates();
+                } else {
+                    showToast('Error saving data!', 'error');
+                }
+            });
+        }
+
+        // Delete item
+        function deleteItem(type, id) {
+            if (confirm(`Are you sure you want to delete this ${type}?`)) {
+                if (type === 'project') {
+                    portfolioData.projects = portfolioData.projects.filter(p => p.id !== id);
+                } else if (type === 'skill') {
+                    portfolioData.skills = portfolioData.skills.filter(s => s.id !== id);
+                } else if (type === 'experience') {
+                    portfolioData.experience = portfolioData.experience.filter(e => e.id !== id);
+                } else if (type === 'testimonial') {
+                    portfolioData.testimonials = portfolioData.testimonials.filter(t => t.id !== id);
+                } else if (type === 'certificate') {
+                    portfolioData.certificates = portfolioData.certificates.filter(c => c.id !== id);
+                }
+                
+                saveData().then(success => {
+                    if (success) {
+                        showToast(`${type} deleted successfully!`);
+                        
+                        if (type === 'project') renderProjects();
+                        if (type === 'skill') renderSkills();
+                        if (type === 'experience') renderExperience();
+                        if (type === 'testimonial') renderTestimonials();
+                        if (type === 'certificate') renderCertificates();
+                    } else {
+                        showToast('Error deleting data!', 'error');
+                    }
+                });
+            }
+        }
+
+        // Render functions
+        function renderProjects() {
+            const list = document.getElementById('projects-list');
+            list.innerHTML = portfolioData.projects.map(p => `
+                <div class="glass rounded-lg p-6 border border-slate-700">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-lg font-semibold text-white">${p.title}</h4>
+                        <div class="flex gap-2">
+                            <button onclick="deleteItem('project', ${p.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">${p.description}</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${p.tech.map(t => `<span class="px-2 py-1 bg-slate-700 rounded text-xs text-gray-300">${t}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSkills() {
+            const list = document.getElementById('skills-list');
+            list.innerHTML = portfolioData.skills.map(s => `
+                <div class="glass rounded-lg p-4 border border-slate-700">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-white font-semibold">${s.name}</h4>
+                        <button onclick="deleteItem('skill', ${s.id})" class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-2">${s.category}</p>
+                    <div class="w-full bg-slate-700 rounded-full h-2">
+                        <div class="bg-cyan-500 h-2 rounded-full skill-bar" data-level="${s.level}"></div>
+                    </div>
+                    <p class="text-cyan-400 text-xs mt-2">${s.level}%</p>
+                </div>
+            `).join('');
+            
+            // Apply width styles after rendering
+            document.querySelectorAll('.skill-bar').forEach(bar => {
+                bar.style.width = bar.getAttribute('data-level') + '%';
+            });
+        }
+
+        function renderExperience() {
+            const list = document.getElementById('experience-list');
+            list.innerHTML = portfolioData.experience.map(e => `
+                <div class="glass rounded-lg p-6 border border-slate-700">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="text-white font-semibold">${e.title}</h4>
+                            <p class="text-gray-400 text-sm">${e.company}</p>
+                        </div>
+                        <button onclick="deleteItem('experience', ${e.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-2">${e.duration}</p>
+                    <p class="text-gray-400 text-sm">${e.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderTestimonials() {
+            const list = document.getElementById('testimonials-list');
+            list.innerHTML = portfolioData.testimonials.map(t => `
+                <div class="glass rounded-lg p-6 border border-slate-700">
+                    <p class="text-gray-300 mb-4 italic">"${t.text}"</p>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-white font-semibold">${t.author}</p>
+                            <p class="text-gray-500 text-sm">${t.company}</p>
+                        </div>
+                        <button onclick="deleteItem('testimonial', ${t.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCertificates() {
+            console.log('renderCertificates() called');
+            const list = document.getElementById('certificates-list');
+            if (!list) {
+                console.error('certificates-list element not found!');
+                return;
+            }
+            console.log('Current certificates:', portfolioData.certificates);
+            
+            list.innerHTML = portfolioData.certificates.map(c => `
+                <div class="glass rounded-lg p-6 border border-slate-700">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex-1">
+                            <h4 class="text-white font-semibold">${c.title}</h4>
+                            <p class="text-gray-400 text-sm">${c.issuer}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editItem('certificate', ${c.id})" class="px-3 py-1 bg-cyan-600 hover:bg-cyan-700 text-white rounded text-sm">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteItem('certificate', ${c.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    ${c.date ? `<p class="text-gray-500 text-xs mb-2">${new Date(c.date).toLocaleDateString()}</p>` : ''}
+                    ${c.link ? `<a href="${c.link}" target="_blank" class="text-cyan-400 text-sm hover:underline flex items-center gap-2"><i class="fas fa-external-link-alt"></i>View Certificate</a>` : ''}
+                </div>
+            `).join('');
+            
+            console.log('Certificates rendered successfully');
+        }
+
+        function renderAllItems() {
+            renderProjects();
+            renderSkills();
+            renderExperience();
+            renderTestimonials();
+            renderCertificates();
+        }
+
+        // Custom Sections
+        function createNewSection() {
+            const title = document.getElementById('new-section-title').value;
+            const icon = document.getElementById('new-section-icon').value;
+            const desc = document.getElementById('new-section-desc').value;
+
+            if (!title) {
+                alert('Please enter a section title');
+                return;
+            }
+
+            const newSection = {
+                id: Math.max(...(portfolioData.customSections.map(s => s.id) || [0])) + 1,
+                title: title,
+                icon: icon || 'fa-star',
+                description: desc,
+                content: []
+            };
+
+            portfolioData.customSections.push(newSection);
+            
+            saveData().then(success => {
+                if (success) {
+                    document.getElementById('new-section-title').value = '';
+                    document.getElementById('new-section-icon').value = '';
+                    document.getElementById('new-section-desc').value = '';
+                    renderCustomSections();
+                    showToast('New section created successfully!');
+                } else {
+                    showToast('Error creating section!', 'error');
+                }
+            });
+        }
+
+        function renderCustomSections() {
+            const list = document.getElementById('custom-sections-list');
+            list.innerHTML = portfolioData.customSections.map(s => `
+                <div class="glass rounded-lg p-6 border border-slate-700">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="fas ${s.icon} text-cyan-400"></i>
+                                <h4 class="text-white font-semibold">${s.title}</h4>
+                            </div>
+                            <p class="text-gray-400 text-sm">${s.description}</p>
+                        </div>
+                        <button onclick="deleteCustomSection(${s.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            if (portfolioData.customSections.length === 0) {
+                list.innerHTML = '<p class="text-gray-400">No custom sections yet. Create one above!</p>';
+            }
+        }
+
+        function deleteCustomSection(id) {
+            if (confirm('Are you sure you want to delete this section?')) {
+                portfolioData.customSections = portfolioData.customSections.filter(s => s.id !== id);
+                saveData().then(success => {
+                    if (success) {
+                        renderCustomSections();
+                        showToast('Section deleted successfully!');
+                    } else {
+                        showToast('Error deleting section!', 'error');
+                    }
+                });
+            }
+        }
+
+        // Save functions
+        function saveSection(section) {
+            if (section === 'about') {
+                portfolioData.about = {
+                    name: document.getElementById('about-name').value,
+                    role: document.getElementById('about-role').value,
+                    location: document.getElementById('about-location').value,
+                    bio: document.getElementById('about-bio').value,
+                    image: document.getElementById('about-image').value
+                };
+            } else if (section === 'contact') {
+                portfolioData.contact = {
+                    email: document.getElementById('contact-email').value,
+                    phone: document.getElementById('contact-phone').value,
+                    linkedin: document.getElementById('contact-linkedin').value,
+                    github: document.getElementById('contact-github').value,
+                    twitter: document.getElementById('contact-twitter').value,
+                    location: document.getElementById('contact-location').value
+                };
+            }
+            
+            saveData().then(success => {
+                if (success) {
+                    showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} saved successfully!`);
+                } else {
+                    showToast('Error saving data!', 'error');
+                }
+            });
+        }
+
+        function saveAllChanges() {
+            // Save About section
+            if (document.getElementById('about-name')) {
+                portfolioData.about = {
+                    name: document.getElementById('about-name').value,
+                    role: document.getElementById('about-role').value,
+                    location: document.getElementById('about-location').value,
+                    bio: document.getElementById('about-bio').value,
+                    image: document.getElementById('about-image').value
+                };
+            }
+
+            // Save Contact section
+            if (document.getElementById('contact-email')) {
+                portfolioData.contact = {
+                    email: document.getElementById('contact-email').value,
+                    phone: document.getElementById('contact-phone').value,
+                    linkedin: document.getElementById('contact-linkedin').value,
+                    github: document.getElementById('contact-github').value,
+                    twitter: document.getElementById('contact-twitter').value,
+                    location: document.getElementById('contact-location').value
+                };
+            }
+
+            saveData().then(success => {
+                if (success) {
+                    showToast('✓ All changes saved successfully!');
+                    console.log('Data saved to: /data/portfolio-data.json');
+                } else {
+                    showToast('✗ Error saving changes!', 'error');
+                    console.error('Failed to save data');
+                }
+            }).catch(err => {
+                showToast('✗ Error: ' + err.message, 'error');
+                console.error('Save error:', err);
+            });
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            toast.className = `fixed bottom-8 right-8 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i>${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear session if using API auth
+                fetch('api/auth.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'action=logout'
+                }).then(() => {
+                    window.location.href = 'admin-login.html';
+                });
+            }
+        }
+
+        // Load contact messages
+        async function loadContactMessages() {
+            const messagesList = document.getElementById('messages-list');
+            messagesList.innerHTML = '<p class="text-gray-400 text-center py-8"><i class="fas fa-spinner fa-spin"></i> Loading messages...</p>';
+            
+            try {
+                const response = await fetch('api/contact.php', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                const result = await response.json();
+                
+                console.log('Contact Messages Response:', result);
+                
+                if (result.success && result.data) {
+                    displayContactMessages(result.data);
+                    document.getElementById('message-count').textContent = result.data.length + ' message' + (result.data.length !== 1 ? 's' : '');
+                } else if (result.success && (!result.data || result.data.length === 0)) {
+                    displayContactMessages([]);
+                } else {
+                    console.log('API Response:', result);
+                    messagesList.innerHTML = `<p class="text-yellow-400 text-center py-8"><i class="fas fa-info-circle"></i> ${result.message || 'Unable to load messages'}</p>`;
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                messagesList.innerHTML = '<p class="text-red-400 text-center py-8"><i class="fas fa-exclamation-circle"></i> Error loading messages. Check browser console.</p>';
+            }
+        }
+
+        // Display contact messages
+        function displayContactMessages(messages) {
+            const messagesList = document.getElementById('messages-list');
+            
+            if (!messages || messages.length === 0) {
+                messagesList.innerHTML = '<p class="text-gray-400 text-center py-8">No messages yet. Check back when users submit contact forms!</p>';
+                return;
+            }
+
+            messagesList.innerHTML = messages.map(msg => {
+                // Extract phone number digits for WhatsApp link and add +91 prefix
+                let phoneDisplay = msg.phone;
+                let phoneDigits = msg.phone ? msg.phone.replace(/\D/g, '') : '';
+                
+                // Add +91 prefix if not present
+                if (phoneDisplay && !phoneDisplay.startsWith('+91')) {
+                    phoneDisplay = '+91 ' + phoneDisplay.replace(/^\+91\s?/, '');
+                }
+                
+                const whatsappLink = phoneDigits ? `https://wa.me/${phoneDigits}` : '#';
+                
+                return `
+                <div class="glass rounded-lg p-6 border border-slate-700 hover:border-cyan-400 transition">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="text-white font-semibold text-lg">${msg.first_name} ${msg.last_name}</h4>
+                            <p class="text-gray-400 text-sm">${msg.email}</p>
+                            ${msg.phone ? `<p class="text-gray-400 text-sm flex items-center gap-2 mt-1">
+                                <i class="fas fa-phone text-cyan-400"></i>
+                                <a href="${whatsappLink}" target="_blank" class="text-cyan-400 hover:text-cyan-300 flex items-center gap-1">
+                                    ${phoneDisplay} <i class="fab fa-whatsapp text-green-400"></i>
+                                </a>
+                            </p>` : ''}
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${
+                                msg.status === 'new' ? 'bg-blue-600 text-white' : 
+                                msg.status === 'replied' ? 'bg-green-600 text-white' : 
+                                'bg-gray-600 text-white'
+                            }">${msg.status.toUpperCase()}</span>
+                            <span class="text-gray-500 text-xs">${new Date(msg.created_at).toLocaleString()}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-gray-300 text-sm font-medium mb-2"><strong>Subject:</strong> ${msg.subject}</p>
+                        <p class="text-gray-400 text-sm mb-3"><strong>Message:</strong></p>
+                        <p class="text-gray-400 bg-slate-700/50 p-3 rounded text-sm leading-relaxed">${msg.message}</p>
+                    </div>
+                    
+                    <div class="flex gap-2 pt-4 border-t border-slate-600">
+                        ${msg.phone ? `<a href="${whatsappLink}" target="_blank" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition flex items-center gap-1">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>` : ''}
+                        <button onclick="replyToMessage(${msg.id}, '${msg.email}')" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded text-sm transition">
+                            <i class="fas fa-reply mr-1"></i>Reply
+                        </button>
+                        <button onclick="deleteMessage(${msg.id})" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded text-sm transition">
+                            <i class="fas fa-trash mr-1"></i>Delete
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // Reply to message
+        function replyToMessage(messageId, email) {
+            const reply = prompt(`Send email reply to ${email}:\n\n(This is a demo - implement email service in production)`);
+            if (reply) {
+                showToast('Reply functionality requires email service setup');
+            }
+        }
+
+        // Delete message
+        function deleteMessage(messageId) {
+            if (confirm('Are you sure you want to delete this message?')) {
+                // This would require a DELETE handler in contact.php
+                showToast('Delete functionality - implement in production');
+                loadContactMessages();
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            // Load messages if on messages section
+            setTimeout(() => {
+                if (document.getElementById('messages-section') && !document.getElementById('messages-section').classList.contains('hidden')) {
+                    loadContactMessages();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

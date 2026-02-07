@@ -1,0 +1,140 @@
+{
+    "about": {
+        "name": "Avinash",
+        "role": "Full Stack Developer & Data Analyst",
+        "location": "Ahiwara, Durg",
+        "bio": "Based in Ahiwara, Durg, I specialize in building custom digital solutions that drive business efficiency. Currently working at NSPCL - NTPC Ltd.",
+        "image": ""
+    },
+    "projects": [
+        {
+            "id": 1,
+            "title": "Online Training Management System",
+            "category": "web",
+            "description": "Enterprise training platform",
+            "tech": [
+                "PHP",
+                "SQL Server"
+            ]
+        },
+        {
+            "id": 2,
+            "title": "Online Complaint Management System",
+            "category": "web",
+            "description": "Complaint tracking system",
+            "tech": [
+                "PHP",
+                "SQL Server"
+            ]
+        },
+        {
+            "id": 3,
+            "title": "NSPCL Mobile Application",
+            "category": "mobile",
+            "description": "Mobile app for internal use",
+            "tech": [
+                "Ionic",
+                "Angular"
+            ]
+        },
+        {
+            "id": 4,
+            "title": "Pizza Sales Power BI Report",
+            "category": "data",
+            "description": "Data visualization project",
+            "tech": [
+                "Power BI",
+                "DAX"
+            ]
+        }
+    ],
+    "skills": [
+        {
+            "id": 1,
+            "name": "PHP",
+            "category": "Languages",
+            "level": 95
+        },
+        {
+            "id": 2,
+            "name": "JavaScript",
+            "category": "Languages",
+            "level": 85
+        },
+        {
+            "id": 3,
+            "name": "SQL Server",
+            "category": "Databases",
+            "level": 90
+        },
+        {
+            "id": 4,
+            "name": "Ionic",
+            "category": "Frameworks",
+            "level": 80
+        }
+    ],
+    "experience": [
+        {
+            "id": 1,
+            "title": "Web Developer",
+            "company": "NSPCL - NTPC Ltd",
+            "duration": "April 2022 - Present",
+            "description": "Enterprise solutions"
+        }
+    ],
+    "testimonials": [
+        {
+            "id": 1,
+            "text": "Great developer",
+            "author": "HR Manager",
+            "company": "NSPCL - NTPC Ltd"
+        }
+    ],
+    "certificates": [
+        {
+            "id": 6,
+            "title": "KPMG Australia \u2013 Data Analytics Consulting Virtual Internship",
+            "issuer": "KPMG",
+            "link": "https://certificates.upgrad.com/a5ad156d-cafa-4606-9386-ed307fb67d22-Gen-AI-cEboGflmYomlLhrt.jpeg",
+            "date": "2025-10-03"
+        },
+        {
+            "id": 7,
+            "title": "HP LIFE \u2013 Sales Forecasting ",
+            "issuer": "HP LIFE",
+            "link": "https://www.life-global.org/certificate/90c78a2c-8170-418f-b276-fcb8cb81d368",
+            "date": "2025-03-18"
+        },
+        {
+            "id": 8,
+            "title": "Jobaaj.com  \u2013 Analyzing and Visualizing Data with Microsoft Power BI",
+            "issuer": "Jobaaj",
+            "link": "https://www.jobaajlearnings.com/certificate?file=certificate-37263-88-0.jpeg",
+            "date": "2025-06-19"
+        },
+        {
+            "id": 9,
+            "title": "Great Learning \u2013 ChatGPT for Beginners V2",
+            "issuer": "Great Learning",
+            "link": "",
+            "date": ""
+        },
+        {
+            "id": 10,
+            "title": "upGrad \u2013 Generative AI Foundations Certificate",
+            "issuer": "upGrad",
+            "link": "https://certificates.upgrad.com/a5ad156d-cafa-4606-9386-ed307fb67d22-Gen-AI-cEboGflmYomlLhrt.jpeg",
+            "date": "2025-10-03"
+        }
+    ],
+    "contact": {
+        "email": "contact@avinash.dev",
+        "phone": "",
+        "linkedin": "",
+        "github": "",
+        "twitter": "",
+        "location": "Ahiwara, Durg, Chhattisgarh, India"
+    },
+    "customSections": []
+}
